@@ -16,6 +16,10 @@ function App() {
   const [isFileUploaded, setIsFileUploaded] = useState(false);
   const [dataEncrypt, setDataEncrypt] = useState([]);
   const [dataDecrypt, setDataDecrypt] = useState([]);
+  const [displayDataEncrypt, setDisplayDataEncrypt] = useState(false);
+  const [encryptionTime, setEncryptionTime] = useState("");
+  const [decryptionTime, setDecryptionTime] = useState("");
+  const displayedData = displayDataEncrypt ? dataEncrypt : dataDecrypt;
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -26,6 +30,14 @@ function App() {
       const content = e.target.result;
       setFileContent(content);
       setIsFileUploaded(true);
+
+      // Reset the displayed data
+      setDataEncrypt("");
+      setDataDecrypt("");
+      setDisplayDataEncrypt(false);
+
+      setEncryptionTime("");
+      setDecryptionTime("");
     };
 
     reader.readAsText(file);
@@ -37,7 +49,6 @@ function App() {
     }
   };
   const getFileExtension = (fileName) => {
-    console.log(fileName.split(".").pop().toLowerCase());
     return fileName.split(".").pop().toLowerCase();
   };
   const getImageForFileExtension = (extension) => {
@@ -69,22 +80,26 @@ function App() {
   ];
 
   const handleEncrypt = () => {
+    const startTime = performance.now();
     const lines = fileContent.split("\n");
-    // console.log(lines);
-
-    // Mảng chứa dữ liệu đã mã hóa
     const encodedLines = [];
 
-    // Mã hóa từng dòng và thêm vào mảng
     lines.forEach((line) => {
       const encodedLine = Encrypt1(line);
       encodedLines.push(encodedLine);
     });
-    console.log(encodedLines);
+
+    const endTime = performance.now();
+    const elapsedTime = endTime - startTime;
+    console.log(elapsedTime);
+
+    setEncryptionTime(elapsedTime);
     setDataEncrypt(encodedLines);
+    setDisplayDataEncrypt(true);
   };
 
   const handleDecrypt = () => {
+    const startTime = performance.now();
     // Tách dữ liệu thành từng dòng
     const lines = fileContent.split("\n");
 
@@ -96,26 +111,30 @@ function App() {
       const decodedLine = DEcrypt1(line);
       decodedLines.push(decodedLine);
     });
-    console.log(decodedLines);
+    const endTime = performance.now();
+    const elapsedTime = endTime - startTime;
+    console.log(elapsedTime);
 
+    setDecryptionTime(elapsedTime);
     setDataDecrypt(decodedLines);
+    setDisplayDataEncrypt(false);
   };
 
   const handleDownloadClick = () => {
     const blob = new Blob([dataEncrypt], { type: "text/plain;charset=utf-8" });
     saveAs(blob, "encrypted_data.txt");
   };
-  async function performEncryption() {
-    console.time("thời gian mã hóa");
-    await handleEncrypt();
-    console.timeEnd("thời gian mã hóa");
-  }
-  async function performDecryption() {
-    console.time("thời gian giải mã");
-    await handleDecrypt();
-    console.timeEnd("thời gian giải mã");
-  }
-
+  // async function performEncryption() {
+  //   console.time("thời gian mã hóa");
+  //   await handleEncrypt();
+  //   console.timeEnd("thời gian mã hóa");
+  // }
+  // async function performDecryption() {
+  //   console.time("thời gian giải mã");
+  //   await handleDecrypt();
+  //   console.timeEnd("thời gian giải mã");
+  // }
+  // useEffect(() => {}, [decryptionTime]);
   return (
     <div className="container">
       <div className="upload">
@@ -154,29 +173,33 @@ function App() {
             </button>
             <button
               size="large"
-              className="btn-encrypt"
-              // onClick={handleEncrypt}
-              onClick={performEncryption}
+              className={`btn-encrypt ${fileContent === "" ? "disabled" : ""}`}
+              onClick={handleEncrypt}
+              disabled={fileContent === ""}
             >
               Mã hóa
             </button>
             <button
               size="large"
-              className="btn-descypt"
-              onClick={performDecryption}
+              className={`btn-descypt ${fileContent === "" ? "disabled" : ""}`}
+              onClick={handleDecrypt}
+              disabled={fileContent === ""}
+              // onClick={performDecryption}
             >
               Giải mã
             </button>
             <button
               size="large"
-              className="btn-download"
+              className={`btn-download ${fileContent === "" ? "disabled" : ""}`}
               onClick={handleDownloadClick}
+              disabled={fileContent === ""}
             >
               Download
             </button>
           </div>
 
-          {/* <h3>Thời gian giải mã: </h3> */}
+          {encryptionTime && <h3>Thời gian mã hóa: {encryptionTime} ms</h3>}
+          {decryptionTime && <h3>Thời gian giải mã: {decryptionTime} ms</h3>}
         </div>
         <div className="wrapper_key">
           <h3>Nhập key</h3>
@@ -230,7 +253,7 @@ function App() {
             rows={8}
             disabled
             defaultValue=""
-            value={dataDecrypt || dataEncrypt}
+            value={displayedData}
             sx={{ width: "92%" }}
           />
         </div>

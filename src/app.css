@@ -49,6 +49,9 @@
     padding-top: 10px;
     
 }
+.disabled {
+    cursor: not-allowed;
+  }
 button {
     border: none;
     height: 30px;
