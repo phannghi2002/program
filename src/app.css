@@ -47,19 +47,26 @@
 }
 .button {
     padding-top: 10px;
-    
+    display: flex;
 }
 .disabled {
     cursor: not-allowed;
+    opacity: 0.5;
   }
 button {
     border: none;
-    height: 30px;
+    /* height: 30px; */
+    height:40px;
     border-radius: 4px;
     font-size: 16px;
     font-weight: 600;
     padding: 8px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    
 }
 button + button {
     margin-left: 10px;
@@ -67,5 +74,26 @@ button + button {
 .btn-upload {
     background: #047df0;
     /* font-size: 18px; */
-    color: white
+    color: white;
+    margin:0;
+    display: flex;
+    justify-content: center;
+    align-items: center
+}
+.btn-encrypt {
+    background-color: #965479;
+    /* background-color: yellow; */
+}
+.btn-decrypt {
+    background-color: #c5be27;
+    /* background-color: red; */
+}
+.btn-download {
+    background-color: #65b853;
+    /* background-color: red; */
+}
+.title {
+    line-height: 40px;
+    margin-left: 2px;
+    margin-top: 2px;
 }

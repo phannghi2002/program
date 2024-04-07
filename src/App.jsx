@@ -10,6 +10,11 @@ import { useState } from "react";
 import { Encrypt1, DEcrypt1 } from "./aes";
 import { saveAs } from "file-saver";
 
+import LockIcon from "@mui/icons-material/Lock";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
+import UploadFile from "@mui/icons-material/UploadFile";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
+
 function App() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileContent, setFileContent] = useState("");
@@ -19,8 +24,18 @@ function App() {
   const [displayDataEncrypt, setDisplayDataEncrypt] = useState(false);
   const [encryptionTime, setEncryptionTime] = useState("");
   const [decryptionTime, setDecryptionTime] = useState("");
-  const displayedData = displayDataEncrypt ? dataEncrypt : dataDecrypt;
 
+  const [active, setActive] = useState(false);
+  let displayedData = displayDataEncrypt ? dataEncrypt : dataDecrypt;
+
+  if (
+    encryptionTime.length !== 0 ||
+    (decryptionTime.length !== 0 && displayDataEncrypt)
+  ) {
+    console.log("ngu vl");
+  } else {
+    console.log("bot cut");
+  }
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
@@ -46,6 +61,7 @@ function App() {
   const handleChangeTextField = (event) => {
     if (!isFileUploaded) {
       setFileContent(event.target.value);
+      displayedData = "";
     }
   };
   const getFileExtension = (fileName) => {
@@ -96,6 +112,7 @@ function App() {
     setEncryptionTime(elapsedTime);
     setDataEncrypt(encodedLines);
     setDisplayDataEncrypt(true);
+    setActive(true);
   };
 
   const handleDecrypt = () => {
@@ -118,11 +135,22 @@ function App() {
     setDecryptionTime(elapsedTime);
     setDataDecrypt(decodedLines);
     setDisplayDataEncrypt(false);
+    setActive(true);
   };
 
   const handleDownloadClick = () => {
-    const blob = new Blob([dataEncrypt], { type: "text/plain;charset=utf-8" });
-    saveAs(blob, "encrypted_data.txt");
+    console.log("in hanh dong", displayedData);
+    console.log(dataDecrypt, "in ra chuooi rong chu", dataEncrypt);
+    let data;
+    data = displayDataEncrypt ? dataEncrypt : dataDecrypt;
+
+    const blob = new Blob([data], { type: "text/plain;charset=utf-8" });
+    saveAs(
+      blob,
+      displayDataEncrypt ? "encrypted_data.txt" : "decrypted_data.txt"
+    );
+    // const blob = new Blob([dataEncrypt], { type: "text/plain;charset=utf-8" });
+    // saveAs(blob, "encrypted_data.txt");
   };
   // async function performEncryption() {
   //   console.time("thời gian mã hóa");
@@ -169,7 +197,8 @@ function App() {
               className="btn-upload"
               onClick={() => document.getElementById("file-upload").click()}
             >
-              Upload file
+              <UploadFile />
+              <span className="title">Tải lên</span>
             </button>
             <button
               size="large"
@@ -177,29 +206,34 @@ function App() {
               onClick={handleEncrypt}
               disabled={fileContent === ""}
             >
-              Mã hóa
+              <LockIcon />
+              <span className="title"> Mã hóa</span>
             </button>
             <button
               size="large"
-              className={`btn-descypt ${fileContent === "" ? "disabled" : ""}`}
+              className={`btn-decrypt ${fileContent === "" ? "disabled" : ""}`}
               onClick={handleDecrypt}
               disabled={fileContent === ""}
               // onClick={performDecryption}
             >
-              Giải mã
+              <LockOpenIcon />
+              <span className="title"> Giải mã</span>
             </button>
             <button
               size="large"
-              className={`btn-download ${fileContent === "" ? "disabled" : ""}`}
+              className={`btn-download ${!active ? "disabled" : ""}`}
               onClick={handleDownloadClick}
-              disabled={fileContent === ""}
+              disabled={!active}
+              // disabled={fileContent === ""}
             >
-              Download
+              <FileDownloadIcon />
+              <span className="title"> Download</span>
             </button>
           </div>
 
-          {encryptionTime && <h3>Thời gian mã hóa: {encryptionTime} ms</h3>}
-          {decryptionTime && <h3>Thời gian giải mã: {decryptionTime} ms</h3>}
+          {displayDataEncrypt
+            ? encryptionTime && <h3>Thời gian mã hóa: {encryptionTime} ms</h3>
+            : decryptionTime && <h3>Thời gian giải mã: {decryptionTime} ms</h3>}
         </div>
         <div className="wrapper_key">
           <h3>Nhập key</h3>
