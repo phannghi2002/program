@@ -28,17 +28,9 @@ function App() {
   const [active, setActive] = useState(false);
   let displayedData = displayDataEncrypt ? dataEncrypt : dataDecrypt;
 
-  if (
-    encryptionTime.length !== 0 ||
-    (decryptionTime.length !== 0 && displayDataEncrypt)
-  ) {
-    console.log("ngu vl");
-  } else {
-    console.log("bot cut");
-  }
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
+  const handleRead = (e, file) => {
     setSelectedFile(file);
+
     const reader = new FileReader();
 
     reader.onload = (e) => {
@@ -57,7 +49,18 @@ function App() {
 
     reader.readAsText(file);
   };
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    handleRead(event, file);
+  };
 
+  const handleDrapOver = (e) => {
+    e.preventDefault();
+  };
+  const handleDrop = (e) => {
+    e.preventDefault();
+    handleRead(e, e.dataTransfer.files[0]);
+  };
   const handleChangeTextField = (event) => {
     if (!isFileUploaded) {
       setFileContent(event.target.value);
@@ -180,9 +183,13 @@ function App() {
               <h3>{selectedFile.name}</h3>
             </>
           ) : (
-            <div className="wrapper">
+            <div
+              className="wrapper"
+              onDragOver={handleDrapOver}
+              onDrop={handleDrop}
+            >
               <img src={image} alt="txt" className="img" />
-              <h3>Thả và kéo file vào đây</h3>
+              <h3>Kéo và thả file vào đây</h3>
             </div>
           )}
 
