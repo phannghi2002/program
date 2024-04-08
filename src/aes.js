@@ -303,6 +303,7 @@ AES.Counter = function () {
 AES.Crypto = function (key) {
   var blockSize = 16; //byte
 
+  console.log("tim key", key);
   this.key = key;
   this.keySchedule = AES.keyExpansion(key);
   this.counter = new AES.Counter();
@@ -355,23 +356,99 @@ AES.Crypto = function (key) {
     return this.run(AES.Base64.decode(text));
   };
 };
-export const Encrypt1 = (a) => {
-  var encodedString = encodeURIComponent(a);
-  console.log(" unicode", encodedString);
-  var actual1 = new AES.Crypto([
-    209, 226, 230, 34, 56, 87, 142, 137, 135, 127, 83, 104, 55, 220, 68, 19,
-  ])
+export const Encrypt1 = (a, inputString, type) => {
+  var actual = new AES.Crypto(type(inputString))
     .setCounter([241, 229, 177, 73, 172, 112, 231, 89, 0, 0, 0, 0, 0, 0, 0, 0])
-    .encrypt(encodedString);
-  return actual1;
+    .encrypt(a);
+  return actual;
 };
 
-export const DEcrypt1 = (a) => {
-  var actual = new AES.Crypto([
-    209, 226, 230, 34, 56, 87, 142, 137, 135, 127, 83, 104, 55, 220, 68, 19,
-  ])
+export const DEcrypt1 = (a, inputString, type) => {
+  var actual = new AES.Crypto(type(inputString))
     .setCounter([241, 229, 177, 73, 172, 112, 231, 89, 0, 0, 0, 0, 0, 0, 0, 0])
     .decrypt(a);
-  var decodedString = decodeURIComponent(actual);
-  return decodedString;
+
+  return actual;
+};
+
+//chuyển key về hex
+const stringToHex = (str) => {
+  let hex = "";
+  for (let i = 0; i < str.length; i++) {
+    hex += str.charCodeAt(i).toString(16).padStart(2, "0");
+  }
+  return hex;
+};
+
+const splitHex = (hex) => {
+  //chia thành mảng với định dạng 0x
+  const hexArray = [];
+  for (let i = 0; i < hex.length; i += 2) {
+    hexArray.push("0x" + hex.slice(i, i + 2));
+  }
+  return hexArray;
+};
+
+const padHexArray = (hexArray, desiredLength) => {
+  //thêm bit thiếu
+  while (hexArray.length < desiredLength) {
+    hexArray.push("0x00");
+  }
+  return hexArray;
+};
+
+let paddedHexArray;
+let desiredLength;
+
+///chọn loại mã hóa 128bit
+export const key128 = (inputString) => {
+  desiredLength = 16;
+  const hexString = stringToHex(inputString);
+  const hexArray = splitHex(hexString);
+  if (hexArray.length > 16) {
+    //in thông báo lỗi
+    alert("chieu dai key vuot qua 128bit");
+  }
+  paddedHexArray = padHexArray(hexArray, desiredLength);
+  console.log("độ dài", hexArray.length);
+  console.log("Chuỗi Hex:", hexString);
+  console.log("Mảng Hex:", hexArray);
+  console.log("Mảng Hex với phần tử 0x00 được thêm:", paddedHexArray);
+  return paddedHexArray;
+};
+
+///chọn loại mã hóa 192bit
+export const key192 = (inputString) => {
+  //chọn loại mã hóa
+  desiredLength = 24;
+  const hexString = stringToHex(inputString);
+  const hexArray = splitHex(hexString);
+  if (hexArray.length > 24) {
+    //in thông báo lỗi
+    alert("chieu dai key vuot qua 192bit");
+  }
+  paddedHexArray = padHexArray(hexArray, desiredLength);
+  console.log("độ dài", hexArray.length);
+  console.log("Chuỗi Hex:", hexString);
+  console.log("Mảng Hex:", hexArray);
+  console.log("Mảng Hex với phần tử 0x00 được thêm:", paddedHexArray);
+  return paddedHexArray;
+};
+
+///chọn loại mã hóa 256bit
+export const key256 = (inputString) => {
+  //chọn loại mã hóa
+  desiredLength = 32;
+  const hexString = stringToHex(inputString);
+  const hexArray = splitHex(hexString);
+  if (hexArray.length > 32) {
+    //in thông báo lỗi
+    alert("chieu dai key vuot qua 256bit");
+  }
+  paddedHexArray = padHexArray(hexArray, desiredLength);
+  console.log("độ dài", hexArray.length);
+  console.log("Chuỗi Hex:", hexString);
+  console.log("Mảng Hex:", hexArray);
+  console.log("Mảng Hex với phần tử 0x00 được thêm:", paddedHexArray);
+  return paddedHexArray;
 };

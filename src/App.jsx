@@ -7,8 +7,10 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 
 import { useState } from "react";
-import { Encrypt1, DEcrypt1 } from "./aes";
+import { Encrypt1, DEcrypt1, key128, key192, key256 } from "./aes";
 import { saveAs } from "file-saver";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
@@ -24,8 +26,10 @@ function App() {
   const [displayDataEncrypt, setDisplayDataEncrypt] = useState(false);
   const [encryptionTime, setEncryptionTime] = useState("");
   const [decryptionTime, setDecryptionTime] = useState("");
-
   const [active, setActive] = useState(false);
+  const [key, setKey] = useState("");
+  const [typeKey, setTypeKey] = useState("128bit");
+
   let displayedData = displayDataEncrypt ? dataEncrypt : dataDecrypt;
 
   const handleRead = (e, file) => {
@@ -98,45 +102,59 @@ function App() {
     },
   ];
 
+  let functionType;
+  switch (typeKey) {
+    case "128bit":
+      functionType = key128;
+      break;
+    case "192bit":
+      functionType = key192;
+      break;
+    case "256bit":
+      functionType = key256;
+      break;
+    default:
+      break;
+  }
+  const checkKey = (key) => {
+    console.log("ao vay");
+    if (key === "") {
+      toast.error("Không được để key trống");
+      return true;
+    } else return false;
+  };
   const handleEncrypt = () => {
+    console.log("Khoa va loai khoa", key, functionType);
+    if (checkKey(key)) return;
     const startTime = performance.now();
-    const lines = fileContent.split("\n");
-    const encodedLines = [];
 
-    lines.forEach((line) => {
-      const encodedLine = Encrypt1(line);
-      encodedLines.push(encodedLine);
-    });
+    const encodedLine = Encrypt1(fileContent, key, functionType);
+    console.log("in ra lan luot", encodedLine, fileContent);
 
+    console.log("in ra ky tu", encodedLine);
     const endTime = performance.now();
     const elapsedTime = endTime - startTime;
     console.log(elapsedTime);
 
     setEncryptionTime(elapsedTime);
-    setDataEncrypt(encodedLines);
+    setDataEncrypt(encodedLine);
     setDisplayDataEncrypt(true);
     setActive(true);
   };
 
   const handleDecrypt = () => {
+    if (checkKey(key)) return;
     const startTime = performance.now();
-    // Tách dữ liệu thành từng dòng
-    const lines = fileContent.split("\n");
 
-    // Mảng chứa dữ liệu đã giải mã
-    const decodedLines = [];
+    const decodedLine = DEcrypt1(fileContent, key, functionType);
 
-    // Giải mã từng dòng và thêm vào mảng
-    lines.forEach((line) => {
-      const decodedLine = DEcrypt1(line);
-      decodedLines.push(decodedLine);
-    });
+    console.log("in ra ky tu", decodedLine);
     const endTime = performance.now();
     const elapsedTime = endTime - startTime;
     console.log(elapsedTime);
 
     setDecryptionTime(elapsedTime);
-    setDataDecrypt(decodedLines);
+    setDataDecrypt(decodedLine);
     setDisplayDataEncrypt(false);
     setActive(true);
   };
@@ -169,10 +187,9 @@ function App() {
   return (
     <div className="container">
       <div className="upload">
-        {/* <h1> Upload file</h1> */}
         <div className="wrapper_upload">
           {selectedFile ? (
-            <>
+            <div onDragOver={handleDrapOver} onDrop={handleDrop}>
               <img
                 src={getImageForFileExtension(
                   getFileExtension(selectedFile.name)
@@ -180,8 +197,9 @@ function App() {
                 alt={selectedFile.name}
                 className="img"
               />
+
               <h3>{selectedFile.name}</h3>
-            </>
+            </div>
           ) : (
             <div
               className="wrapper"
@@ -190,6 +208,7 @@ function App() {
             >
               <img src={image} alt="txt" className="img" />
               <h3>Kéo và thả file vào đây</h3>
+              {/* //{" "} */}
             </div>
           )}
 
@@ -250,6 +269,10 @@ function App() {
             select
             label="Key"
             defaultValue="128bit"
+            value={typeKey}
+            onChange={(e) => {
+              setTypeKey(e.target.value);
+            }}
             sx={{
               width: "20%",
             }}
@@ -268,6 +291,10 @@ function App() {
             sx={{
               width: "70%",
               marginLeft: "2%",
+            }}
+            value={key}
+            onChange={(e) => {
+              setKey(e.target.value);
             }}
           />
 
@@ -297,6 +324,8 @@ function App() {
             value={displayedData}
             sx={{ width: "92%" }}
           />
+
+          <ToastContainer autoClose={3000} />
         </div>
       </div>
     </div>
