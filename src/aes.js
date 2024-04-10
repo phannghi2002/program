@@ -199,74 +199,87 @@ export const AES = {
   },
 };
 
+// AES.Base64 = {
+//   characters:
+//     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+
+//   encode: function (input) {
+//     var output = "";
+
+//     var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+
+//     var i;
+
+//     for (i = 0; i < input.length; ) {
+//       chr1 = input.charCodeAt(i++); //lấy ký tự của input
+//       chr2 = input.charCodeAt(i++);
+//       chr3 = input.charCodeAt(i++);
+
+//       enc1 = chr1 >> 2;
+//       enc2 = ((chr1 & 0x3) << 4) | (chr2 >> 4);
+//       enc3 = ((chr2 & 0xf) << 2) | (chr3 >> 6);
+//       enc4 = chr3 & 0x3f;
+
+//       if (isNaN(chr2)) {
+//         enc3 = enc4 = 64;
+//       } else if (isNaN(chr3)) {
+//         enc4 = 64;
+//       }
+
+//       output =
+//         output +
+//         this.characters.charAt(enc1) +
+//         this.characters.charAt(enc2) +
+//         this.characters.charAt(enc3) +
+//         this.characters.charAt(enc4);
+//     }
+
+//     return output;
+//   },
+
+//   decode: function (input) {
+//     var output = "";
+
+//     var chr1, chr2, chr3, dec1, dec2, dec3, dec4;
+
+//     var i;
+//     //eslint-disable-next-line
+//     input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+
+//     for (i = 0; i < input.length; ) {
+//       dec1 = this.characters.indexOf(input.charAt(i++));
+//       dec2 = this.characters.indexOf(input.charAt(i++));
+//       dec3 = this.characters.indexOf(input.charAt(i++));
+//       dec4 = this.characters.indexOf(input.charAt(i++));
+
+//       chr1 = (dec1 << 2) | (dec2 >> 4);
+//       chr2 = ((dec2 & 0xf) << 4) | (dec3 >> 2);
+//       chr3 = ((dec3 & 0x3) << 6) | dec4;
+
+//       output = output + String.fromCharCode(chr1);
+
+//       if (dec3 !== 64) {
+//         output = output + String.fromCharCode(chr2);
+//       }
+//       if (dec4 !== 64) {
+//         output = output + String.fromCharCode(chr3);
+//       }
+//     }
+
+//     return output;
+//   },
+// };
+
 AES.Base64 = {
-  characters:
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
-
   encode: function (input) {
-    var output = "";
-
-    var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
-
-    var i;
-
-    for (i = 0; i < input.length; ) {
-      chr1 = input.charCodeAt(i++); //lấy ký tự của input
-      chr2 = input.charCodeAt(i++);
-      chr3 = input.charCodeAt(i++);
-
-      enc1 = chr1 >> 2;
-      enc2 = ((chr1 & 0x3) << 4) | (chr2 >> 4);
-      enc3 = ((chr2 & 0xf) << 2) | (chr3 >> 6);
-      enc4 = chr3 & 0x3f;
-
-      if (isNaN(chr2)) {
-        enc3 = enc4 = 64;
-      } else if (isNaN(chr3)) {
-        enc4 = 64;
-      }
-
-      output =
-        output +
-        this.characters.charAt(enc1) +
-        this.characters.charAt(enc2) +
-        this.characters.charAt(enc3) +
-        this.characters.charAt(enc4);
-    }
-
-    return output;
+    var encodedString = encodeURIComponent(input);
+    console.log("encode" + encodedString);
+    return encodedString;
   },
 
   decode: function (input) {
-    var output = "";
-
-    var chr1, chr2, chr3, dec1, dec2, dec3, dec4;
-
-    var i;
-    //eslint-disable-next-line
-    input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-
-    for (i = 0; i < input.length; ) {
-      dec1 = this.characters.indexOf(input.charAt(i++));
-      dec2 = this.characters.indexOf(input.charAt(i++));
-      dec3 = this.characters.indexOf(input.charAt(i++));
-      dec4 = this.characters.indexOf(input.charAt(i++));
-
-      chr1 = (dec1 << 2) | (dec2 >> 4);
-      chr2 = ((dec2 & 0xf) << 4) | (dec3 >> 2);
-      chr3 = ((dec3 & 0x3) << 6) | dec4;
-
-      output = output + String.fromCharCode(chr1);
-
-      if (dec3 !== 64) {
-        output = output + String.fromCharCode(chr2);
-      }
-      if (dec4 !== 64) {
-        output = output + String.fromCharCode(chr3);
-      }
-    }
-
-    return output;
+    var decodedString = decodeURIComponent(input);
+    return decodedString;
   },
 };
 AES.Counter = function () {
@@ -357,9 +370,11 @@ AES.Crypto = function (key) {
   };
 };
 export const Encrypt1 = (a, inputString, type) => {
+  // var encodedString = encodeURIComponent(a);
   var actual = new AES.Crypto(type(inputString))
     .setCounter([241, 229, 177, 73, 172, 112, 231, 89, 0, 0, 0, 0, 0, 0, 0, 0])
     .encrypt(a);
+  // .encrypt(encodedString);
   return actual;
 };
 
@@ -367,7 +382,7 @@ export const DEcrypt1 = (a, inputString, type) => {
   var actual = new AES.Crypto(type(inputString))
     .setCounter([241, 229, 177, 73, 172, 112, 231, 89, 0, 0, 0, 0, 0, 0, 0, 0])
     .decrypt(a);
-
+  // var decodedString = decodeURIComponent(actual);
   return actual;
 };
 
@@ -403,18 +418,20 @@ let desiredLength;
 ///chọn loại mã hóa 128bit
 export const key128 = (inputString) => {
   desiredLength = 16;
+
   const hexString = stringToHex(inputString);
   const hexArray = splitHex(hexString);
   if (hexArray.length > 16) {
-    //in thông báo lỗi
-    alert("chieu dai key vuot qua 128bit");
+    throw new Error("Chiều dài key vượt quá 128bit");
+    // alert("Chiều dài key vượt quá 128bit");
+  } else {
+    paddedHexArray = padHexArray(hexArray, desiredLength);
+    console.log("độ dài", hexArray.length);
+    console.log("Chuỗi Hex:", hexString);
+    console.log("Mảng Hex:", hexArray);
+    console.log("Mảng Hex với phần tử 0x00 được thêm:", paddedHexArray);
+    return paddedHexArray;
   }
-  paddedHexArray = padHexArray(hexArray, desiredLength);
-  console.log("độ dài", hexArray.length);
-  console.log("Chuỗi Hex:", hexString);
-  console.log("Mảng Hex:", hexArray);
-  console.log("Mảng Hex với phần tử 0x00 được thêm:", paddedHexArray);
-  return paddedHexArray;
 };
 
 ///chọn loại mã hóa 192bit
@@ -425,7 +442,8 @@ export const key192 = (inputString) => {
   const hexArray = splitHex(hexString);
   if (hexArray.length > 24) {
     //in thông báo lỗi
-    alert("chieu dai key vuot qua 192bit");
+    throw new Error("Chiều dài key vượt quá 192bit");
+    // alert("Chiều dài key vượt quá 192bit");
   }
   paddedHexArray = padHexArray(hexArray, desiredLength);
   console.log("độ dài", hexArray.length);
@@ -443,7 +461,8 @@ export const key256 = (inputString) => {
   const hexArray = splitHex(hexString);
   if (hexArray.length > 32) {
     //in thông báo lỗi
-    alert("chieu dai key vuot qua 256bit");
+    throw new Error("Chiều dài key vượt quá 256bit");
+    // alert("Chiều dài key vượt quá 256bit");
   }
   paddedHexArray = padHexArray(hexArray, desiredLength);
   console.log("độ dài", hexArray.length);

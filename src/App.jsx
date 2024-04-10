@@ -123,40 +123,69 @@ function App() {
       return true;
     } else return false;
   };
+  // const handleEncrypt = () => {
+  //   console.log("Khoa va loai khoa", key, functionType);
+  //   if (checkKey(key)) return;
+
+  //   const startTime = performance.now();
+
+  //   const encodedLine = Encrypt1(fileContent, key, functionType);
+  //   console.log("in ra lan luot", encodedLine, fileContent);
+
+  //   console.log("in ra ky tu", encodedLine);
+  //   const endTime = performance.now();
+  //   const elapsedTime = endTime - startTime;
+  //   console.log(elapsedTime);
+
+  //   setEncryptionTime(elapsedTime);
+  //   setDataEncrypt(encodedLine);
+  //   setDisplayDataEncrypt(true);
+  //   setActive(true);
+  // };
+
   const handleEncrypt = () => {
-    console.log("Khoa va loai khoa", key, functionType);
+    console.log("kho vcl", key, functionType);
     if (checkKey(key)) return;
-    const startTime = performance.now();
 
-    const encodedLine = Encrypt1(fileContent, key, functionType);
-    console.log("in ra lan luot", encodedLine, fileContent);
+    try {
+      const startTime = performance.now();
+      const encodedLine = Encrypt1(fileContent, key, functionType);
+      console.log("in ra lan luot", encodedLine, fileContent);
 
-    console.log("in ra ky tu", encodedLine);
-    const endTime = performance.now();
-    const elapsedTime = endTime - startTime;
-    console.log(elapsedTime);
+      console.log("in ra ky tu", encodedLine);
+      const endTime = performance.now();
+      const elapsedTime = endTime - startTime;
+      console.log(elapsedTime);
 
-    setEncryptionTime(elapsedTime);
-    setDataEncrypt(encodedLine);
-    setDisplayDataEncrypt(true);
-    setActive(true);
+      setEncryptionTime(elapsedTime);
+      setDataEncrypt(encodedLine);
+      setDisplayDataEncrypt(true);
+      setActive(true);
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   const handleDecrypt = () => {
     if (checkKey(key)) return;
-    const startTime = performance.now();
 
-    const decodedLine = DEcrypt1(fileContent, key, functionType);
+    try {
+      const startTime = performance.now();
 
-    console.log("in ra ky tu", decodedLine);
-    const endTime = performance.now();
-    const elapsedTime = endTime - startTime;
-    console.log(elapsedTime);
+      const decodedLine = DEcrypt1(fileContent, key, functionType);
 
-    setDecryptionTime(elapsedTime);
-    setDataDecrypt(decodedLine);
-    setDisplayDataEncrypt(false);
-    setActive(true);
+      console.log("in ra ky tu", decodedLine);
+      const endTime = performance.now();
+      const elapsedTime = endTime - startTime;
+      console.log(elapsedTime);
+
+      setDecryptionTime(elapsedTime);
+      setDataDecrypt(decodedLine);
+      setDisplayDataEncrypt(false);
+      setActive(true);
+    } catch (err) {
+      toast.error(err.message);
+    }
   };
 
   const handleDownloadClick = () => {
