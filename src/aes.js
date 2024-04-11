@@ -335,8 +335,35 @@ AES.Crypto = function (key) {
     return this.counter.arr;
   };
 
+  // this.run = function (input) {
+  //   var blockCount = Math.ceil(input.length / blockSize);
+  //   var output = new Array(input.length);
+
+  //   var counterBlock, byteCount, offset;
+
+  //   var block, c;
+
+  //   for (block = 0; block < blockCount; block++) {
+  //     counterBlock = AES.cipher(this.counter.arr, this.keySchedule);
+  //     byteCount =
+  //       block + 1 === blockCount ? input.length % blockSize : blockSize;
+  //     offset = block * blockSize;
+
+  //     for (c = 0; c < byteCount; c++) {
+  //       output[offset + c] = String.fromCharCode(
+  //         counterBlock[c] ^ input.charCodeAt(offset + c)
+  //       );
+  //     }
+
+  //     this.counter.increment();
+  //   }
+
+  //   return output.join("");
+  // };
+
   this.run = function (input) {
     var blockCount = Math.ceil(input.length / blockSize);
+
     var output = new Array(input.length);
 
     var counterBlock, byteCount, offset;
@@ -349,10 +376,19 @@ AES.Crypto = function (key) {
         block + 1 === blockCount ? input.length % blockSize : blockSize;
       offset = block * blockSize;
 
-      for (c = 0; c < byteCount; c++) {
-        output[offset + c] = String.fromCharCode(
-          counterBlock[c] ^ input.charCodeAt(offset + c)
-        );
+      if (byteCount == 0) {
+        for (c = 0; c < 16; c++) {
+          output[offset + c] = String.fromCharCode(
+            counterBlock[c] ^ input.charCodeAt(offset + c)
+          );
+        }
+      }
+      if (byteCount != 0) {
+        for (c = 0; c < byteCount; c++) {
+          output[offset + c] = String.fromCharCode(
+            counterBlock[c] ^ input.charCodeAt(offset + c)
+          );
+        }
       }
 
       this.counter.increment();
@@ -360,7 +396,6 @@ AES.Crypto = function (key) {
 
     return output.join("");
   };
-
   this.encrypt = function (text) {
     return AES.Base64.encode(this.run(text));
   };
