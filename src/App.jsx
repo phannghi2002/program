@@ -117,46 +117,20 @@ function App() {
       break;
   }
   const checkKey = (key) => {
-    console.log("ao vay");
     if (key === "") {
       toast.error("Không được để key trống");
       return true;
     } else return false;
   };
-  // const handleEncrypt = () => {
-  //   console.log("Khoa va loai khoa", key, functionType);
-  //   if (checkKey(key)) return;
-
-  //   const startTime = performance.now();
-
-  //   const encodedLine = Encrypt1(fileContent, key, functionType);
-  //   console.log("in ra lan luot", encodedLine, fileContent);
-
-  //   console.log("in ra ky tu", encodedLine);
-  //   const endTime = performance.now();
-  //   const elapsedTime = endTime - startTime;
-  //   console.log(elapsedTime);
-
-  //   setEncryptionTime(elapsedTime);
-  //   setDataEncrypt(encodedLine);
-  //   setDisplayDataEncrypt(true);
-  //   setActive(true);
-  // };
 
   const handleEncrypt = () => {
-    console.log("kho vcl", key, functionType);
     if (checkKey(key)) return;
 
     try {
       const startTime = performance.now();
       const encodedLine = Encrypt1(fileContent, key, functionType);
-      console.log("in ra lan luot", encodedLine, fileContent);
-
-      console.log("in ra ky tu", encodedLine);
       const endTime = performance.now();
       const elapsedTime = endTime - startTime;
-      console.log(elapsedTime);
-
       setEncryptionTime(elapsedTime);
       setDataEncrypt(encodedLine);
       setDisplayDataEncrypt(true);
@@ -171,14 +145,9 @@ function App() {
 
     try {
       const startTime = performance.now();
-
       const decodedLine = DEcrypt1(fileContent, key, functionType);
-
-      console.log("in ra ky tu", decodedLine);
       const endTime = performance.now();
       const elapsedTime = endTime - startTime;
-      console.log(elapsedTime);
-
       setDecryptionTime(elapsedTime);
       setDataDecrypt(decodedLine);
       setDisplayDataEncrypt(false);
@@ -189,8 +158,6 @@ function App() {
   };
 
   const handleDownloadClick = () => {
-    console.log("in hanh dong", displayedData);
-    console.log(dataDecrypt, "in ra chuooi rong chu", dataEncrypt);
     let data;
     data = displayDataEncrypt ? dataEncrypt : dataDecrypt;
 
@@ -199,20 +166,8 @@ function App() {
       blob,
       displayDataEncrypt ? "encrypted_data.txt" : "decrypted_data.txt"
     );
-    // const blob = new Blob([dataEncrypt], { type: "text/plain;charset=utf-8" });
-    // saveAs(blob, "encrypted_data.txt");
   };
-  // async function performEncryption() {
-  //   console.time("thời gian mã hóa");
-  //   await handleEncrypt();
-  //   console.timeEnd("thời gian mã hóa");
-  // }
-  // async function performDecryption() {
-  //   console.time("thời gian giải mã");
-  //   await handleDecrypt();
-  //   console.timeEnd("thời gian giải mã");
-  // }
-  // useEffect(() => {}, [decryptionTime]);
+
   return (
     <div className="container">
       <div className="upload">
@@ -235,9 +190,8 @@ function App() {
               onDragOver={handleDrapOver}
               onDrop={handleDrop}
             >
-              <img src={image} alt="txt" className="img" />
+              <img src={txt} alt="txt" className="img" />
               <h3>Kéo và thả file vào đây</h3>
-              {/* //{" "} */}
             </div>
           )}
 
@@ -269,7 +223,6 @@ function App() {
               className={`btn-decrypt ${fileContent === "" ? "disabled" : ""}`}
               onClick={handleDecrypt}
               disabled={fileContent === ""}
-              // onClick={performDecryption}
             >
               <LockOpenIcon />
               <span className="title"> Giải mã</span>
@@ -279,7 +232,6 @@ function App() {
               className={`btn-download ${!active ? "disabled" : ""}`}
               onClick={handleDownloadClick}
               disabled={!active}
-              // disabled={fileContent === ""}
             >
               <FileDownloadIcon />
               <span className="title"> Download</span>
@@ -334,10 +286,8 @@ function App() {
             label="Dữ liệu đầu vào"
             multiline
             rows={5}
-            defaultValue=""
             value={fileContent}
             onChange={handleChangeTextField}
-            // disabled={isFileUploaded}
             sx={{ width: "92%" }}
           />
 
@@ -349,7 +299,6 @@ function App() {
             multiline
             rows={8}
             disabled
-            defaultValue=""
             value={displayedData}
             sx={{ width: "92%" }}
           />

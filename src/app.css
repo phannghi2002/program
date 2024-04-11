@@ -46,8 +46,11 @@
     width: 50%;
 }
 .button {
-    padding-top: 10px;
+    padding-top: 40px;
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
 }
 .disabled {
     cursor: not-allowed;
@@ -70,6 +73,7 @@ button {
 }
 button + button {
     margin-left: 10px;
+    /* margin-top: 10px; */
   }
 .btn-upload {
     background: #047df0;
