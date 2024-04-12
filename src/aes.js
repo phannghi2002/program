@@ -456,8 +456,8 @@ export const key128 = (inputString) => {
 
   const hexString = stringToHex(inputString);
   const hexArray = splitHex(hexString);
-  if (hexArray.length > 16) {
-    throw new Error("Chiều dài key vượt quá 128bit");
+  if (hexArray.length != 16) {
+    throw new Error("Nhập đúng 16 ký tự");
     // alert("Chiều dài key vượt quá 128bit");
   } else {
     paddedHexArray = padHexArray(hexArray, desiredLength);
@@ -475,17 +475,18 @@ export const key192 = (inputString) => {
   desiredLength = 24;
   const hexString = stringToHex(inputString);
   const hexArray = splitHex(hexString);
-  if (hexArray.length > 24) {
+  if (hexArray.length != 24) {
     //in thông báo lỗi
-    throw new Error("Chiều dài key vượt quá 192bit");
+    throw new Error("Nhập đúng 24 ký tự");
     // alert("Chiều dài key vượt quá 192bit");
+  } else {
+    paddedHexArray = padHexArray(hexArray, desiredLength);
+    console.log("độ dài", hexArray.length);
+    console.log("Chuỗi Hex:", hexString);
+    console.log("Mảng Hex:", hexArray);
+    console.log("Mảng Hex với phần tử 0x00 được thêm:", paddedHexArray);
+    return paddedHexArray;
   }
-  paddedHexArray = padHexArray(hexArray, desiredLength);
-  console.log("độ dài", hexArray.length);
-  console.log("Chuỗi Hex:", hexString);
-  console.log("Mảng Hex:", hexArray);
-  console.log("Mảng Hex với phần tử 0x00 được thêm:", paddedHexArray);
-  return paddedHexArray;
 };
 
 ///chọn loại mã hóa 256bit
@@ -494,15 +495,16 @@ export const key256 = (inputString) => {
   desiredLength = 32;
   const hexString = stringToHex(inputString);
   const hexArray = splitHex(hexString);
-  if (hexArray.length > 32) {
+  if (hexArray.length != 32) {
     //in thông báo lỗi
-    throw new Error("Chiều dài key vượt quá 256bit");
+    throw new Error("Nhập đúng 32 ký tự");
     // alert("Chiều dài key vượt quá 256bit");
+  } else {
+    paddedHexArray = padHexArray(hexArray, desiredLength);
+    console.log("độ dài", hexArray.length);
+    console.log("Chuỗi Hex:", hexString);
+    console.log("Mảng Hex:", hexArray);
+    console.log("Mảng Hex với phần tử 0x00 được thêm:", paddedHexArray);
+    return paddedHexArray;
   }
-  paddedHexArray = padHexArray(hexArray, desiredLength);
-  console.log("độ dài", hexArray.length);
-  console.log("Chuỗi Hex:", hexString);
-  console.log("Mảng Hex:", hexArray);
-  console.log("Mảng Hex với phần tử 0x00 được thêm:", paddedHexArray);
-  return paddedHexArray;
 };
