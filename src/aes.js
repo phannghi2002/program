@@ -363,11 +363,8 @@ AES.Crypto = function (key) {
 
   this.run = function (input) {
     var blockCount = Math.ceil(input.length / blockSize);
-
     var output = new Array(input.length);
-
     var counterBlock, byteCount, offset;
-
     var block, c;
 
     for (block = 0; block < blockCount; block++) {
@@ -390,16 +387,13 @@ AES.Crypto = function (key) {
           );
         }
       }
-
       this.counter.increment();
     }
-
     return output.join("");
   };
   this.encrypt = function (text) {
     return AES.Base64.encode(this.run(text));
   };
-
   this.decrypt = function (text) {
     return this.run(AES.Base64.decode(text));
   };
@@ -438,8 +432,6 @@ const splitHex = (hex) => {
   }
   return hexArray;
 };
-
-let paddedHexArray;
 
 ///chọn loại mã hóa 128bit
 export const key128 = (inputString) => {

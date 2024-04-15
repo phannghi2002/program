@@ -1,8 +1,6 @@
 import "./app.css";
 import image from "./assets/a5.png";
 import txt from "./assets/txt.jpg";
-import pdf from "./assets/pdf.jpg";
-import doc from "./assets/doc.jpg";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 
@@ -46,7 +44,6 @@ function App() {
       setDataEncrypt("");
       setDataDecrypt("");
       setDisplayDataEncrypt(false);
-
       setEncryptionTime("");
       setDecryptionTime("");
     };
@@ -78,10 +75,6 @@ function App() {
     switch (extension) {
       case "txt":
         return txt; // Replace with the image source for TXT files
-      case "pdf":
-        return pdf; // Replace with the image source for PDF files
-      case "docx":
-        return doc;
       default:
         return image; // Replace with the image source for other file types
     }
